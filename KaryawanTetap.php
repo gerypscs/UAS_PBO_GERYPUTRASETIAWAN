@@ -1,33 +1,30 @@
 <?php
 // KaryawanTetap.php
-
-require_once 'Karyawan.php'; // Memastikan class induk dimuat
+require_once 'Karyawan.php';
 
 class KaryawanTetap extends Karyawan {
-    // Properti tambahan spesifik Karyawan Tetap
+    // Atribut spesifik tahap 4
     private $tunjanganKesehatan;
     private $opsiSahamId;
 
     public function __construct($id, $nama, $dept, $hariMasuk, $gajiPerHari, $tunjangan, $opsiSaham) {
-        // Mengirimkan data global ke constructor milik parent class (Karyawan)
         parent::__construct($id, $nama, $dept, $hariMasuk, $gajiPerHari, 'Tetap');
         $this->tunjanganKesehatan = $tunjangan;
         $this->opsiSahamId = $opsiSaham;
     }
 
-    // Perhitungan gaji: (Hari Kerja x Gaji Harian) + Tunjangan Kesehatan
+    // [POLIMORFISME OVERRIDING] - Logika Bisnis 2: Kehadiran + Tunjangan
     public function hitung_gaji_bersih() {
         return ($this->hari_kerja_masuk * $this->gaji_dasar_per_hari) + $this->tunjanganKesehatan;
     }
 
-    // Menampilkan profil spesifik tetap
+    // [POLIMORFISME OVERRIDING]
     public function tampilkan_profil_karyawan() {
         return "
-        [KARYAWAN TETAP]<br>
+        <b>[KARYAWAN TETAP]</b><br>
         ID / Nama          : {$this->id_karyawan} / {$this->nama_karyawan}<br>
         Departemen         : {$this->departemen}<br>
-        Tunjangan Kesehatan: Rp " . number_format($this->tunjanganKesehatan, 0, ',', '.') . "<br>
         Opsi Saham ID      : {$this->opsiSahamId}<br>
-        -------------------------------------------";
+        Tunjangan Kesehatan: Rp " . number_format($this->tunjanganKesehatan, 0, ',', '.');
     }
 }
