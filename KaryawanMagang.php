@@ -1,37 +1,31 @@
 <?php
 // KaryawanMagang.php
-
-require_once 'Karyawan.php'; // Memastikan class induk dimuat
+require_once 'Karyawan.php';
 
 class KaryawanMagang extends Karyawan {
-    // Properti tambahan spesifik Karyawan Magang
-    private $uangSakuBulanan;
+    // Atribut spesifik tahap 4
+    private $uangSakuBulanan; 
     private $sertifikatKampusMerdeka;
 
-    public function __construct($id, $nama, $dept, $hariMasuk, $uangSaku, $sertifikat) {
-        // Gaji dasar per hari diset 0 karena magang dibayar bulanan lewat uang saku
-        parent::__construct($id, $nama, $dept, $hariMasuk, 0, 'Magang');
-        $this->uangSakuBulanan = $uangSaku;
+    public function __construct($id, $nama, $dept, $hariMasuk, $gajiPerHari, $sertifikat) {
+        // Menerima parameter plafon harian ($gajiPerHari) sesuai kebutuhan logika bisnis baru
+        parent::__construct($id, $nama, $dept, $hariMasuk, $gajiPerHari, 'Magang');
         $this->sertifikatKampusMerdeka = $sertifikat;
     }
 
-    // Perhitungan gaji: Proporsional berdasarkan kehadiran (asumsi batas full 20 hari)
+    // [POLIMORFISME OVERRIDING] - Logika Bisnis 3: Potongan Upah 20% (Dikali 0.80)
     public function hitung_gaji_bersih() {
-        if ($this->hari_kerja_masuk >= 20) {
-            return $this->uangSakuBulanan;
-        } else {
-            return ($this->hari_kerja_masuk / 20) * $this->uangSakuBulanan;
-        }
+        $gajiKotor = $this->hari_kerja_masuk * $this->gaji_dasar_per_hari;
+        return $gajiKotor * 0.80;
     }
 
-    // Menampilkan profil spesifik magang
+    // [POLIMORFISME OVERRIDING]
     public function tampilkan_profil_karyawan() {
         return "
-        [KARYAWAN MAGANG]<br>
+        <b>[KARYAWAN MAGANG]</b><br>
         ID / Nama       : {$this->id_karyawan} / {$this->nama_karyawan}<br>
         Departemen      : {$this->departemen}<br>
-        Sertifikat KM   : {$this->sertifikatKampusMerdeka}<br>
-        Uang Saku / bln : Rp " . number_format($this->uangSakuBulanan, 0, ',', '.') . "<br>
-        -------------------------------------------";
+        Program MSIB    : {$this->sertifikatKampusMerdeka}<br>
+        Plafon Harian   : Rp " . number_format($this->gaji_dasar_per_hari, 0, ',', '.') . " (Dikenakan potongan orientasi 20%)";
     }
 }
